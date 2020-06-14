@@ -1,0 +1,39 @@
+from weibopy import WeiboOauth2, WeiboClient
+import webbrowser
+import re
+
+client_key = '3220174686'
+client_secret = '68e79f1eeb38a7ed004a5c86c018ab4f'
+redirect_url = 'https://api.weibo.com/oauth2/default.html'
+
+auth = WeiboOauth2(client_key, client_secret, redirect_url)
+
+webbrowser.open_new(auth.authorize_url)
+
+code = input('输入 code：')
+
+token = auth.auth_access(code)
+
+
+client = WeiboClient(token['access_token'])
+
+from collections import defaultdict
+import time
+
+shijian_list = defaultdict(list)
+comment_text_list=[]
+data = []
+
+for i in range(1,5):
+    result = client.get(suffix='comments/show.json',params={'id':4495845070238516, 'count':200, 'page':i})
+    comments = result['comments']
+    for comment in comments:
+            text = re.sub('回复.*?:', '', str(comment['text']))
+            shijian = comment['created_at'][0:7]
+            shijian_list[shijian].append(text)
+            data.append(shijian)
+            comment_text_list.append(text)
+
+    print('已抓取评论{}条'.format(len(comment_text_list)))
+    time.sleep(1)
+
