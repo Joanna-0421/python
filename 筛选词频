@@ -1,0 +1,33 @@
+import jieba
+from wordcloud import WordCloud
+import PIL.Image as image
+import numpy as np
+
+txt = open(r'C:\Users\zhang\Desktop\tue.txt', encoding='utf-8').read()
+
+words = jieba.lcut(txt)
+cut_text = " ".join(jieba.cut(txt))
+
+counts = {}
+
+for word in words:
+    if len(word)==1:
+        continue
+    else:
+        counts[word] = counts.get(word, 0) + 1
+
+
+items = list(counts.items())
+items.sort(key=lambda x: x[1], reverse=True)
+
+print('Tue Apr')
+for i in range(20):
+    word,count =items[i]
+    print("{0:<5}{1:>5}".format(word,count))
+
+
+
+
+
+
+
