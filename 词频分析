@@ -1,0 +1,50 @@
+from snownlp import SnowNLP
+import jieba
+import jieba.posseg
+import numpy as np
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud,ImageColorGenerator,STOPWORDS
+
+txt = open("/Users/yeanchuan/Desktop/test.txt", "r", encoding='utf-8').read()
+words = jieba.posseg.lcut(txt)
+counts = {}   
+wlist=[]
+for w in words:
+    if ((w.flag=="v")or(w.flag=="n")):
+        wlist.append(w.word)
+    else:
+        continue
+
+cloudlist=" ".join(wlist)
+sw=set(STOPWORDS)
+sw.add("的")
+sw.add("知道")
+sw.add("没有")
+sw.add("知道")
+sw.add("觉得")
+WC=WordCloud(font_path="/System/Library/Fonts/Supplemental/songti.ttc",stopwords=sw).generate(text=cloudlist)
+plt.imshow(WC)
+plt.axis("off")
+plt.show()
+
+
+
+with open("/Users/yeanchuan/Desktop/test.txt", encoding='utf8') as f:
+    list=f.read().split("\n")
+sentilist=[]
+for i in list:
+    try:
+        s=SnowNLP(i)
+    except:
+        print("")
+    try:
+        sentilist.append(s.sentiments)
+    except:
+        print("")
+
+plt.hist(sentilist,bins=np.arange(0,1,0.01),facecolor="g")
+plt.xlabel("degree")
+plt.ylabel("number")
+plt.title("fangfang")
+plt.show()
+
